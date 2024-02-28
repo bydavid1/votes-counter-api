@@ -5,7 +5,8 @@ const registerVotes = async (req, res) => {
   const body = req.body;
 
   const request = await db.request();
-  request.input('jrv', sql.Int, body.jrv);
+  request.input('JRV', sql.Int, body.jrv);
+  request.input('TIPO_CONTEO', sql.VarChar, body.tipo_conteo);
   request.input('ARENA', sql.Int, body.arena);
   request.input('FMLN', sql.Int, body.fmln);
   request.input('NUEVAS_IDEAS', sql.Int, body.nuevas_ideas);
@@ -22,7 +23,7 @@ const registerVotes = async (req, res) => {
   request.input('ABSTENCIONES', sql.Int, body.abstenciones);
   request.input('TOTAL_PAPELETAS', sql.Int, body.total_papeletas);
 
-  request.execute('SP_REGISTRAR_VOTOS', (err, result) => {
+  request.execute('REGISTRAR_VOTOS', (err, result) => {
     if (err) {
       res.status(500).json({ message: 'Error registering votes', error: err });
       return;
@@ -34,14 +35,15 @@ const registerVotes = async (req, res) => {
 const getJrvInfo = async (req, res) => {
   const jrv = req.query.jrv;
   const request = await db.request();
-  request.input('jrv', sql.Int, jrv);
+  request.input('JRV', sql.Int, jrv);
 
-  request.execute('SP_OBTENER_INFO_JRV', (err, result) => {
+  request.execute('OBTENER_INFO_JRV', (err, result) => {
     if (err) {
       res.status(500).json({ message: 'Error getting JRV info', error: err });
       return;
     }
-    res.json(result.recordset[0]);
+
+    res.json({data: result.recordset[0]});
   });
 }
 
